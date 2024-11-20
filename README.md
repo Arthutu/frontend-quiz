@@ -74,3 +74,63 @@ In the alternative box model, the actual space taken up by the box will be 350px
 ### References
 
 1. [The Box Model | MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#block_and_inline_boxes)
+
+## Question 2 - What is CSS Selector Specificity and How Does It Work?
+
+CSS selector specificity determines which styles are applied to an element when multiple rules match. The browser calculates specificity as a four-part value (`INLINE, ID, CLASS, TYPE`), with each part derived from the type of selectors used:
+
+1. **`INLINE`**: Represents whether inline styles are used. Inline styles (e.g., `style="property: value;"`) have the highest specificity. If an inline style is present, `INLINE = 1`; otherwise, `INLINE = 0`.
+2. **`ID`**: Counts the number of ID selectors.
+3. **`CLASS`**: Counts the number of class selectors, such as `.myClass`, attribute selectors like `[type="radio"]`, and pseudo-classes, such as `:hover`.
+4. **`TYPE`**: Counts the number of tag selectors, such as `p`, `h1`, and `td`, and pseudo-elements like `::before`, `::placeholder`, and all other selectors with double-colon notation
+
+### Specificity Calculation
+
+Specificity is represented as an array of values (`INLINE, ID, CLASS, TYPE`). When comparing two rules:
+
+- Compare values column by column from left to right (`INLINE`, then `ID`, then `CLASS`, then `TYPE`).
+- A higher value in a column outweighs all lower columns combined. For example:
+- Specificity `0, 1, 0, 0` (1 ID selector) is higher than `0, 0, 10, 10` (10 classes and 10 tags).
+
+Below are examples of selectors and their respective specificity values:
+
+| Selector                | Specificity (`INLINE, ID, CLASS, TYPE`) |
+|-------------------------|----------------------------|
+| `div`                  | `0, 0, 0, 1`              |
+| `.example`             | `0, 0, 1, 0`              |
+| `#id`                  | `0, 1, 0, 0`              |
+| `div .example`         | `0, 0, 1, 1`              |
+| `#id .example span`    | `0, 1, 1, 1`              |
+| `style="color: red;"`  | `1, 0, 0, 0`              |
+
+### Rule Precedence with Equal Specificity
+
+If two rules have the same specificity, the rule that appears *last* in the CSS (or the closest one, if styles are inherited) takes precedence. For example, if the same rule is declared twice in a stylesheet, the one further down will override the earlier one.
+
+In the example below, The `#id` selector takes precedence due to its higher specificity (0, 1, 0, 0).
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    #id { color: blue; }          /* Specificity: 0, 1, 0, 0 */
+    .example { color: green; }    /* Specificity: 0, 0, 1, 0 */
+    div { color: red; }           /* Specificity: 0, 0, 0, 1 */
+  </style>
+</head>
+<body>
+  <div id="id" class="example">This text is blue.</div>
+</body>
+</html>
+```
+
+### Best Practices for Specificity
+
+- **Use Low Specificity**: Write rules with lower specificity to make them easier to override.
+  - Example: Avoid using ID selectors or deeply nested rules unless absolutely necessary.
+- **Component Libraries**: When designing reusable CSS for component libraries, aim for low specificity. This ensures that library users can easily override styles without resorting to high-specificity selectors or `!important`.
+
+### References
+
+1. [Specificity | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity)
