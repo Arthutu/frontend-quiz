@@ -134,3 +134,41 @@ In the example below, The `#id` selector takes precedence due to its higher spec
 ### References
 
 1. [Specificity | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity)
+
+## Question 3 - What is the CSS `display` property and can you give a few examples of its use?
+
+The CSS `display` property determines both how an element itself is displayed and the layout used for its children, such as flow layout, flexbox, or grid. 
+
+Formally, the `display` property specifies two types:
+1. **Outer Display Type**: Determines how the element participates in the document's layout (e.g., block or inline).
+2. **Inner Display Type**: Defines the layout context for the element's children (e.g., flex, grid).
+
+For example, the behavior of `display: flex` is fully described in the CSS Flexible Box Layout specification, while `display: grid` is detailed in the CSS Grid Layout specification.
+
+### Common Values for the `display` Property
+
+| `display` Value  | Description                                                                                   |
+|------------------|-----------------------------------------------------------------------------------------------|
+| `none`           | The element is not displayed at all. It is removed from the document flow, and its children are also hidden. |
+| `block`          | The element takes up the full width of its container, stacking vertically with other elements. |
+| `inline`         | The element flows inline with other content, like text, and does not start a new line.        |
+| `inline-block`   | Combines inline flow with the ability to set `width` and `height`.                            |
+| `flex`           | Behaves as a block-level container using the flexbox model.                                   |
+| `grid`           | Behaves as a block-level container using the grid layout model.                               |
+| `table`          | Behaves like a `<table>` element, with table layout applied.                                  |
+| `table-row`      | Behaves like a `<tr>` element, used within a `table`.                                         |
+| `table-cell`     | Behaves like a `<td>` element, used within a `table-row`.                                     |
+| `list-item`      | Behaves like a `<li>` element, allowing list-specific properties like `list-style`.           |
+
+### Notes
+The default `display` value for most elements depends on their type. For example:
+
+- `<div>`: `block`
+- `<span>`: `inline`
+- `<li>`: `list-item`
+
+Changing the display value can drastically alter an element's behavior and layout.
+
+### References
+
+1. [CSS Display | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/display)
