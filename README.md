@@ -204,3 +204,68 @@ A "positioned" element is one whose `position` property is set to `relative`, `a
 ### References
 
 1. [CSS Position | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/position)
+
+## Question 5 - What's the Difference Between `inline`, `inline-block`, and `block`?
+
+The `display` property determines how an element is rendered in the document flow. The differences between `inline`, `inline-block`, and `block` elements are significant for layout and styling.
+
+### Comparison Table
+
+| Property                       | `block`                                                                                         | `inline-block`                                                                                          | `inline`                                                                                  |
+|--------------------------------|-------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| **Size**                       | Fills the entire width of its parent container (default behavior).                              | Width and height depend on its content, but `width` and `height` can be explicitly set.                 | Size depends entirely on content, and `width` and `height` cannot be set.               |
+| **Positioning**                | Starts on a new line and occupies the full width of its container.                              | Flows with inline content, allowing other elements beside it.                                           | Flows with inline content, allowing other elements beside it.                           |
+| **Can Specify `width` and `height`** | Yes                                                                                             | Yes                                                                                                     | No. `width` and `height` will be ignored.                                               |
+| **Alignment with `vertical-align`** | Not applicable. Vertically aligns based on its parent's block layout.                         | Yes. Can be aligned vertically within a line using `vertical-align`.                                    | Yes. Can be aligned vertically using `vertical-align`.                                  |
+| **Margins and Paddings**       | All sides respected.                                                                             | All sides respected.                                                                                     | Horizontal margins and paddings are respected, but vertical ones depend on `line-height`.|
+| **Float Behavior**             | Supports floating, allowing placement beside other elements.                                    | Supports floating, behaving like a block element while respecting width and height settings.            | Floats convert it to a block-like element where vertical paddings and margins apply.     |
+
+### Detailed Descriptions
+
+#### 1. **`block`**
+- Block-level elements span the full width of their container by default.
+- They always start on a new line.
+- Examples: `<div>`, `<p>`, `<header>`, `<footer>`.
+
+```html
+<div style="display: block; background: lightblue;">
+  This is a block element.
+</div>
+```
+
+#### 2. **`inline`**
+- Inline elements flow with surrounding text and do not start on a new line.
+- Width and height cannot be set explicitly.
+- Examples: `<span>`, `<a>`, `<strong>`, `<em>`.
+
+```html
+<span style="display: inline; background: lightgreen;">
+  This is an inline element.
+</span>
+```
+
+#### 3. **`inline-block`**
+- Similar to `inline` but allows setting `width`, `height`, and vertical alignment.
+- Flows with other inline elements but behaves like a block in terms of size control.
+- Examples: Often used for buttons, images, or custom layout elements.
+
+```html
+<div style="display: inline-block; width: 100px; height: 50px; background: lightcoral;">
+  This is an inline-block element.
+</div>
+```
+
+### Notes
+
+1. Use Cases:
+   - `block`: Best for structural elements and major containers in your layout.
+   - `inline`: Ideal for styling parts of text or inline-level elements like links.
+   - `inline-block`: Useful for combining inline flow with block-like styling, such as buttons, custom badges, or grid layouts.
+2. Vertical Margins in inline Elements:
+   - Vertical padding and margins are applied visually but do not affect layout or spacing. The vertical space is influenced by `line-height`.
+3. Common Misconception:
+   - Floats do not inherently change the `display` property but can alter layout behavior by removing the element from the normal document flow.
+
+### References
+
+1. [CSS Display | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/display)
