@@ -135,7 +135,7 @@ In the example below, The `#id` selector takes precedence due to its higher spec
 
 1. [Specificity | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity)
 
-## Question 3 - What is the CSS `display` property and can you give a few examples of its use?
+## Question 3 - What is the CSS `display` Property and Can You Give a Few Examples of Its Use?
 
 The CSS `display` property determines both how an element itself is displayed and the layout used for its children, such as flow layout, flexbox, or grid. 
 
@@ -147,7 +147,7 @@ For example, the behavior of `display: flex` is fully described in the CSS Flexi
 
 ### Common Values for the `display` Property
 
-| `display` Value  | Description                                                                                   |
+| `display`  | Description                                                                                   |
 |------------------|-----------------------------------------------------------------------------------------------|
 | `none`           | The element is not displayed at all. It is removed from the document flow, and its children are also hidden. |
 | `block`          | The element takes up the full width of its container, stacking vertically with other elements. |
@@ -161,6 +161,7 @@ For example, the behavior of `display: flex` is fully described in the CSS Flexi
 | `list-item`      | Behaves like a `<li>` element, allowing list-specific properties like `list-style`.           |
 
 ### Notes
+
 The default `display` value for most elements depends on their type. For example:
 
 - `<div>`: `block`
@@ -172,3 +173,34 @@ Changing the display value can drastically alter an element's behavior and layou
 ### References
 
 1. [CSS Display | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/display)
+
+## Question 4 - What's the Difference Between `relative`, `fixed`, `absolute`, `sticky`, and `static` Positioning in CSS?
+
+The `position` CSS property specifies how an element is positioned in a document. Alongside this property, the `top`, `right`, `bottom`, and `left` properties are used to determine the final position of an element.
+
+### Categories of Positioned Elements
+
+A "positioned" element is one whose `position` property is set to `relative`, `absolute`, `fixed`, or `sticky`. Here's an overview of the different values:
+
+| `position` | Description |
+|------------------|-----------------------------------------------------------------------------------------------|
+| **`static`**     | Default value. The element is positioned according to the normal document flow. The `top`, `right`, `bottom`, `left`, and `z-index` properties do not apply. |
+| **`relative`**   | The element's position is adjusted relative to itself, without affecting the layout of surrounding elements. The space the element would occupy in the normal flow remains. |
+| **`absolute`**   | The element is removed from the normal document flow and is positioned relative to its closest positioned ancestor (non-static). If no ancestor is positioned, it is positioned relative to the initial containing block. |
+| **`fixed`**      | The element is removed from the normal document flow and is positioned relative to the viewport. It does not move when the page is scrolled. |
+| **`sticky`**     | A hybrid of relative and fixed positioning. The element is treated as `relative` until it crosses a specified scroll threshold, after which it behaves as `fixed`. |
+
+### Notes
+
+1. Positioning Context:
+   - `absolute` and `fixed` elements are removed from the normal document flow and do not affect the layout of other elements.
+   - `relative` and `sticky` elements remain part of the normal document flow but behave differently under certain conditions.
+2. Z-Index:
+   - Only positioned elements (non-static) can have their `z-index` property applied.
+3. Sticky Limitations:
+   - `position: sticky` only works if the parent container has a defined height.
+   - The sticky behavior may not work in all scenarios if overflow settings or parent height restrictions are misconfigured.
+
+### References
+
+1. [CSS Position | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/position)
