@@ -269,3 +269,108 @@ The `display` property determines how an element is rendered in the document flo
 ### References
 
 1. [CSS Display | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/display)
+
+## Question 6 - Explain the Concept of "Hoisting" in JavaScript
+
+[Hoist](https://dictionary.cambridge.org/dictionary/english/hoist) means lift something heavy with a rope or a machine. In Javascript, **Hoisting** refers to the behavior where variable and function declarations are moved to the top of their containing scope during compilation. This process allows one to use variables and functions before they are declared in the code. However, only declarations are hoisted; initializations or assignments remain in place.
+
+### Hoisting with `var`
+
+Variable declarations using `var` are hoisted and initialized with `undefined`.
+
+```javascript
+var foo;
+console.log(foo); // undefined
+foo = 1;
+console.log(foo); // 1
+```
+
+### Hoisting with `let`, `const`, and `class`
+
+These are hoisted but are not initialized. Accessing them before declaration results in a `ReferenceError` due to the [Temporal Dead Zone (TDZ)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#temporal_dead_zone_tdz)
+
+```javascript
+console.log(y); // ReferenceError
+let y = 'local';
+
+console.log(z); // ReferenceError
+const z = 'local';
+
+console.log(Foo); // ReferenceError
+class Foo {}
+```
+
+### Hoisting with Function Expressions
+
+Only the variable declaration is hoisted, not the function definition.
+
+```javascript
+console.log(bar); // undefined
+bar(); // Uncaught TypeError: bar is not a function
+
+var bar = function () {
+  console.log('Hello');
+};
+```
+
+### Hoisting with Function Declarations
+
+Both the declaration and definition are hoisted. You can call the function before its declaration.
+
+```javascript
+console.log(foo); // [Function: foo]
+foo(); // 'Hello'
+
+function foo() {
+  console.log('Hello');
+}
+```
+
+The same applies to generators (`function*`), async functions (`async function`), and async function generators (`async function*`).
+
+### Hoisting with Import Statements
+
+Import declarations are hoisted, and their side effects occur before the module’s code executes.
+
+```javascript
+foo.doSomething(); // Works as expected
+
+import foo from './modules/foo';
+```
+
+### Under the hood
+
+In reality, JavaScript creates all variables in the current scope before it even tries to executes the code. Variables created using `var` keyword will have the value of `undefined` where variables created using let and const keywords will be marked as `<value unavailable>`. Thus, accessing them will cause a `ReferenceError` preventing you to access them before initialization.
+
+In ECMAScript specifications `let` and `const` declarations are [explained as below:](https://tc39.es/ecma262/#sec-let-and-const-declarations)
+
+> The variables are created when their containing Environment Record is instantiated but may not be accessed in any way until the variable's LexicalBinding is evaluated.
+
+However, this statement is a [litle bit different for the `var` keyword:](https://tc39.es/ecma262/#sec-variable-statement)
+
+> Var variables are created when their containing Environment Record is instantiated and are initialized to undefined when created.
+
+### Modern practices
+
+In practice, modern code bases avoid using `var` and use `let` and `const` exclusively. It is recommended to declare and initialize your variables and import statements at the top of the containing scope/module to eliminate the mental overhead of tracking when a variable can be used.
+
+ESLint is a static code analyzer that can find violations of such cases with the following rules:
+
+- `no-use-before-define`: This rule will warn when it encounters a reference to an identifier that has not yet been declared.
+- `no-undef`: This rule will warn when it encounters a reference to an identifier that has not yet been declared.
+
+### Summary
+
+| Declaration                    | Accessing before declaration |
+| ------------------------------ | ---------------------------- |
+| `var foo`                      | `undefined`                  |
+| `let foo`                      | `ReferenceError`             |
+| `const foo`                    | `ReferenceError`             |
+| `class Foo`                    | `ReferenceError`             |
+| `var foo = function() { ... }` | `undefined`                  |
+| `function foo() { ... }`       | Normal                       |
+| `import`                       | Normal                       |
+
+### References
+
+1. [Hoisting | MDN](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting)
