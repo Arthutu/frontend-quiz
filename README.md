@@ -500,3 +500,106 @@ const bar = 'bar';
 1. [var | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var)
 2. [let | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
 3. [const | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)
+
+## Question 8 - What is the Difference Between `==` and `===` in JavaScript?
+
+In JavaScript, `==` and `===` are used to compare values for equality. However, their behavior differs in terms of type coercion and strictness.
+
+| **Operator**       | **`==` (Equality)**    | **`===` (Strict Equality)** |
+|---------------------|------------------------|-----------------------------|
+| **Type coercion**   | Yes                   | No                          |
+| **Compares value**  | Yes                   | Yes                         |
+| **Compares type**   | No                    | Yes                         |
+
+
+### Equality operator (`==`)
+
+The `==` operator compares two values for equality **after performing type coercion**. Type coercion means JavaScript converts the operands to a common type before comparing them.
+
+```javascript
+42 == '42';     // true (string converted to number)
+0 == false;     // true (false converted to 0)
+null == undefined; // true (special case)
+'' == false;    // true (empty string converted to 0)
+```
+
+However, when using `==`, unintuitive results can happen:
+
+```javascript
+1 == [1];       // true (array converted to number)
+0 == '';        // true (empty string converted to 0)
+0 == '0';       // true (string converted to number)
+'' == '0';      // false (empty string ≠ non-empty string)
+```
+
+A common scenario for using `==` is when checking for `null` or `undefined`, as `a == null` is `true` if `a` is either `null` or `undefined`:
+
+```javascript
+let a = null;
+console.log(a == null);      // true
+console.log(a == undefined); // true
+```
+
+### Strict equality operator (`===`)
+
+The `===` operator compares two values for equality without performing type coercion. It ensures that both the value and the type are the same.
+
+```javascript
+42 === '42';    // false (different types: number ≠ string)
+0 === false;    // false (different types: number ≠ boolean)
+null === undefined; // false (different types)
+[] === false;   // false (different types: object ≠ boolean)
+```
+
+Use `===` when you want to ensure a strict comparison of both value and type. It avoids unexpected results caused by type coercion:
+
+```javascript
+// Comparison with type coercion (==)
+console.log(42 == '42'); // true
+console.log(0 == false); // true
+console.log(null == undefined); // true
+
+// Strict comparison without type coercion (===)
+console.log(42 === '42'); // false
+console.log(0 === false); // false
+console.log(null === undefined); // false
+```
+
+### `Object.is()`
+
+In addition to `==` and `===`, JavaScript offers `Object.is()` for comparing values. It is similar to `===` but handles edge cases differently:
+
+| Comparison          | `===`   | `Object.is()` |
+|---------------------|---------|---------------|
+| `NaN === NaN`      | false    | true          |
+| `-0 === +0`         | true    | false         |
+
+```javascript
+console.log(NaN === NaN);        // false
+console.log(Object.is(NaN, NaN)); // true
+
+console.log(-0 === +0);          // true
+console.log(Object.is(-0, +0));  // false
+```
+
+### Best Practices
+
+1. Prefer `===` over `==`:
+   - The strict equality operator avoids unexpected behavior due to type coercion.
+   - It makes your code more predictable and less error-prone.
+2. Use `==` only for nullish checks:
+   - When you need to check if a value is null or undefined:
+     ```javascript
+     if (value == null) {
+        // Value is either `null` or `undefined`
+      }
+     ```
+3. Enable Linting Rules:
+   - Use ESLint’s `eqeqeq` rule to enforce `===` and `!==` in your code, except when comparing to `null` for nullish checks.
+
+### References
+- [Equality (==) | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Equality)
+- [Strict equality (===) | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality)
+- [Object.is() | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
+
+
