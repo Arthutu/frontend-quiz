@@ -374,3 +374,129 @@ ESLint is a static code analyzer that can find violations of such cases with the
 ### References
 
 1. [Hoisting | MDN](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting)
+
+## Question 7 - What are the differences between JavaScript variables created using `let`, `var` or `const`?
+
+In JavaScript, `let`, `var`, and `const` are keywords used to declare variables, but they differ significantly in terms of **scope**, **initialization**, **redeclaration**, **reassignment**, and **hoisting** behavior.
+
+### Scope
+
+- **`var`**: Scoped to the **function** in which it is declared or to the **global object** if declared outside any function.
+- **`let` and `const`**: Scoped to the nearest **block** (e.g., function, loop, or conditional statement).
+
+```javascript
+function foo() {
+  // All variables are accessible within functions.
+  var bar = 1;
+  let baz = 2;
+  const qux = 3;
+
+  console.log(bar); // 1
+  console.log(baz); // 2
+  console.log(qux); // 3
+}
+
+console.log(bar); // ReferenceError (block-scoped)
+console.log(baz); // ReferenceError (block-scoped)
+console.log(qux); // ReferenceError (block-scoped)
+```
+
+In the following example, `bar` is accessible outside of the `if` block but `baz` and `qux` are not.
+
+```javascript
+if (true) {
+  var bar = 1;
+  let baz = 2;
+  const qux = 3;
+}
+
+console.log(bar); // 1 (accessible, as `var` is function/global scoped)
+console.log(baz); // ReferenceError (block-scoped)
+console.log(qux); // ReferenceError (block-scoped)
+```
+
+### Initilization
+
+- `var` and `let`: Can be declared without being initialized.
+- `const`: Must be initialized at the time of declaration.
+
+```javascript
+var foo; // Ok
+let bar; // Ok
+const baz; // SyntaxError: Missing initializer in const declaration
+```
+
+### Redeclaration
+
+- `var`: Allows redeclaration of the same variable within the same scope.
+- `let` and `const`: Do not allow redeclaration within the same scope.
+
+```javascript
+var foo = 1;
+var foo = 2;
+console.log(foo); // 2
+
+let baz = 3;
+let baz = 4; // Uncaught SyntaxError: Identifier 'baz' has already been declared
+
+const qux = 5;
+const qux = 6; // Uncaught SyntaxError: Identifier 'qux' has already been declared
+```
+
+### Reassignment
+
+- `var` and `let`: Allow reassignment of values.
+- `const`: Does not allow reassignment. However, if the variable holds an object, the object's properties can be modified.
+
+```javascript
+var foo = 1;
+foo = 2; // OK
+
+let bar = 3;
+bar = 4; // OK
+
+const baz = 5;
+baz = 6; // TypeError: Assignment to constant variable
+
+const obj = { key: 'value' };
+obj.key = 'new value'; // OK (properties of the object can be modified)
+```
+
+### Accessing Before Declaration (Hoisting)
+
+- `var`: Hoisted and initialized with undefined.
+- `let` and `const`: Hoisted but remain uninitialized in the [Temporal Dead Zone (TDZ)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#temporal_dead_zone_tdz), resulting in a `ReferenceError` if accessed before declaration.
+
+```javascript
+console.log(foo); // undefined
+var foo = 'foo';
+
+console.log(baz); // ReferenceError: can't access lexical declaration 'baz' before initialization
+let baz = 'baz';
+
+console.log(bar); // ReferenceError: can't access lexical declaration 'bar' before initialization
+const bar = 'bar';
+```
+
+### Best Practices
+
+- Use `const` by default to promote immutability.
+- Use `let` if the variable needs to be reassigned.
+- Avoid using `var`, as its function/global scope and hoisting behavior can lead to unexpected bugs.
+- Use a transpiler like Babel to convert `let`/`const` into older syntax for compatibility with older browsers.
+
+### Summary
+
+| Behavior | `var` | `let` | `const` |
+| --- | --- | --- | --- |
+| Scope | Function or Global | Block | Block |
+| Initialization | Optional | Optional | Required |
+| Redeclaration | Yes | No | No |
+| Reassignment | Yes | Yes | No |
+| Accessing before declaration | `undefined` | `ReferenceError` | `ReferenceError` |
+
+### References
+
+1. [var | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var)
+2. [let | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
+3. [const | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)
