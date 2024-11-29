@@ -602,4 +602,102 @@ console.log(Object.is(-0, +0));  // false
 - [Strict equality (===) | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality)
 - [Object.is() | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
 
+## Question 9 - What is the event loop in JavaScript runtimes?
 
+The **event loop** is a mechanism in JavaScript that enables asynchronous programming in a single-threaded runtime. It ensures that the JavaScript engine can handle multiple operations, including I/O tasks and user interactions, without blocking the execution of the main program.
+
+### Key Components of the Event Loop
+
+#### Call stack
+
+- The **call stack** is a data structure that keeps track of the currently executing functions in the JavaScript runtime.
+- Functions are added to the top of the stack when called and removed when they complete.
+- JavaScript is single-threaded, so only one function can execute at a time.
+
+#### Web APIs/Node.js APIs
+
+- Asynchronous tasks like `setTimeout`, HTTP requests, or DOM events are offloaded to **Web APIs** (in browsers), **Node.js APIs** or any other JavaScript runtime, like [Bun](https://bun.sh/).
+- These APIs run on separate threads and notify the JavaScript runtime when tasks are complete.
+
+#### Task queue / Macrotask queue / Callback queue
+
+- The **task queue** holds callbacks from macrotasks like:
+  - `setTimeout()`, `setInterval()`
+  - DOM event handlers (e.g., click, scroll)
+  - MessageChannel messages
+- These tasks are executed after all synchronous code and microtasks have been processed.
+
+
+#### Microtasks queue
+
+- The **microtask queue** has higher priority than the task queue and is processed before the macrotasks.
+- Microtasks include:
+  - Promise callbacks (`then`, `catch`, `finally`)
+  - `queueMicrotask()`
+  - `MutationObserver` callbacks
+  - Function body execution following `await` 
+
+### How the Event Loop Works
+
+1. **Synchronous Code**:
+   - The engine executes all synchronous code on the call stack.
+
+2. **Handling Asynchronous Operations**:
+   - When an asynchronous operation (e.g., `setTimeout`) is encountered:
+     - It is sent to the corresponding Web API/Node.js API for processing.
+     - Once completed, its callback is added to either the **task queue** or the **microtask queue**.
+
+3. **Processing Tasks**:
+   - When the call stack is empty:
+     - The event loop first processes all callbacks in the **microtask queue**.
+     - Then, it processes the first callback from the **task queue** (macrotasks).
+
+4. **Priority Order**:
+   - Microtasks are always executed **before** the next macrotask.
+   - If new microtasks are added while processing a macrotask, the event loop will prioritize those microtasks.
+
+### Example
+
+```javascript
+console.log('Start');
+
+setTimeout(() => {
+  console.log('Timeout 1');
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('Promise 1');
+});
+
+setTimeout(() => {
+  console.log('Timeout 2');
+}, 0);
+
+console.log('End');
+
+// Console output:
+// Start
+// End
+// Promise 1
+// Timeout 1
+// Timeout 2
+```
+
+**Explanation:**
+
+1. `Start` and `End` are logged first because they are part of the initial synchronous code.
+2. The `Promise` 1 callback (a microtask) is executed next.
+3. Finally, `Timeout` 1 and `Timeout 2` (macrotasks) are executed in the order they were added.
+
+### Summary
+
+The event loop enables asynchronous, non-blocking execution in JavaScript. It manages the interaction between the call stack, Web APIs, and task/microtask queues, processing tasks in a predictable order:
+
+1. Execute synchronous code.
+2. Process the microtask queue.
+3. Process the task queue (macrotasks). This approach ensures smooth execution of both synchronous and asynchronous operations.
+
+### References
+- [The Event Loop | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop)
+- [JavaScript Visualized - Event Loop, Web APIs (Micro)task Queue | Lydia Hallie](https://www.youtube.com/watch?v=eiC58R16hb8&ab_channel=LydiaHallie)
+- [In the Loop | Jake Archibald](https://www.youtube.com/watch?v=cCOL7MC4Pl0&ab_channel=JSConf)
