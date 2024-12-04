@@ -701,3 +701,121 @@ The event loop enables asynchronous, non-blocking execution in JavaScript. It ma
 - [The Event Loop | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop)
 - [JavaScript Visualized - Event Loop, Web APIs (Micro)task Queue | Lydia Hallie](https://www.youtube.com/watch?v=eiC58R16hb8&ab_channel=LydiaHallie)
 - [In the Loop | Jake Archibald](https://www.youtube.com/watch?v=cCOL7MC4Pl0&ab_channel=JSConf)
+
+## Question 10 - Explain event delegation in JavaScript
+
+**Event delegation** is a JavaScript design pattern that allows you to efficiently manage events by attaching a single event listener to a common ancestor element instead of adding individual listeners to each child element. It leverages **event bubbling** to intercept events on child elements as they propagate up the DOM tree.
+
+### How Event Delegation Works
+
+1. **Attach a Listener to the Ancestor**:
+   - Instead of attaching multiple listeners to individual child elements, you attach a single listener to a common parent or ancestor element.
+
+2. **Event Bubbling**:
+   - When an event occurs on a child element, it bubbles up the DOM hierarchy, triggering event listeners on ancestor elements.
+
+3. **Identify the Target**:
+   - Within the ancestor’s event listener, use properties like `event.target` or `event.currentTarget` to identify the actual element that triggered the event.
+
+4. **Perform Target-Specific Actions**:
+   - Based on the target element, execute the appropriate logic within the shared event handler.
+
+### Benefits of Event Delegation
+
+1. **Improved Performance**:
+   - Reduces the number of event listeners, saving memory and improving performance for large sets of elements.
+
+2. **Dynamic Element Handling**:
+   - Automatically supports events for dynamically added child elements without needing additional listeners.
+
+3. **Simplified Code**:
+   - A single, centralized event handler makes the code easier to maintain and debug.
+
+### Example
+
+Here's a simple example:
+
+```javascript
+// HTML:
+// <ul id="item-list">
+//   <li>Item 1</li>
+//   <li>Item 2</li>
+//   <li>Item 3</li>
+// </ul>
+
+const itemList = document.getElementById('item-list');
+
+itemList.addEventListener('click', (event) => {
+  if (event.target.tagName === 'LI') {
+    console.log(`Clicked on ${event.target.textContent}`);
+  }
+});
+```
+
+**How It Works:**
+  - The `click` event listener is attached to the `<ul>` element.
+  - When an `<li>` is clicked, the event bubbles up to the `<ul>` element, triggering its event listener.
+  - The `event.target` property identifies the `<li>` that was clicked.
+
+### Use cases
+
+####  Dynamic Content in SPAs
+
+```javascript
+// HTML:
+// <div id="button-container">
+//   <button>Button 1</button>
+//   <button>Button 2</button>
+// </div>
+// <button id="add-button">Add Button</button>
+
+const buttonContainer = document.getElementById('button-container');
+const addButton = document.getElementById('add-button');
+
+buttonContainer.addEventListener('click', (event) => {
+  if (event.target.tagName === 'BUTTON') {
+    console.log(`Clicked on ${event.target.textContent}`);
+  }
+});
+
+addButton.addEventListener('click', () => {
+  const newButton = document.createElement('button');
+  newButton.textContent = `Button ${buttonContainer.children.length + 1}`;
+  buttonContainer.appendChild(newButton);
+});
+```
+
+**Explanation:**
+  - The `click` listener on `#button-container` handles events for both existing and newly added buttons.
+  - No extra listeners are required for dynamically added buttons.
+
+### Limitations of Event Delegation
+
+1. **Non-Bubbling Events**:
+   - Events like `focus`, `blur`, `mouseenter`, and `mouseleave` do not bubble and cannot be delegated.
+
+2. **Target Identification:**
+   - Ensure accurate checks of `event.target` to avoid unintended behavior, especially with nested elements.
+
+4. **Overhead for Complex Logic:**
+   - Centralized event handling can introduce complexity when distinguishing between multiple child elements.
+
+### Event Delegation in Frameworks
+
+- **React**:
+  - React uses a synthetic event system with event delegation. Events are handled at the root of the React DOM tree and distributed to components efficiently.
+  - This reduces memory usage by avoiding individual DOM listeners for each component.
+
+### Summary
+
+Event delegation optimizes event handling by leveraging event bubbling. It simplifies managing events for multiple or dynamic elements by:
+
+- Attaching a single listener to a parent element.
+- Using the event object to identify the target element.
+
+This approach improves performance, reduces memory usage, and supports dynamic content seamlessly. However, it’s essential to account for non-bubbling events and write clear logic for target identification.
+
+### References
+
+- [Event Delegation | MDN](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation)
+- [React v17.0 Release Candidate: No New Features](https://legacy.reactjs.org/blog/2020/08/10/react-v17-rc.html#changes-to-event-delegation)
