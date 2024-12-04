@@ -919,3 +919,122 @@ The `this` keyword in JavaScript refers to the execution context of a function. 
 
 - [this - JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
 - [The Simple Rules to `this` in Javascript](https://medium.com/m/global-identity-2?redirectUrl=https%3A%2F%2Fcodeburst.io%2Fthe-simple-rules-to-this-in-javascript-35d97f31bde3)
+
+## Question 12 - Describe the difference between a cookie, `sessionStorage` and `localStorage` in browsers
+
+Cookies, `localStorage`, and `sessionStorage` provide methods for storing data on the client. These mechanisms are often used for client-only state, such as access tokens, themes, or personalized layouts, ensuring users have a consistent experience across tabs and sessions.
+
+### Shared Characteristics
+
+All three mechanisms share some fundamental features:
+
+- **Client-side access**: Data is generally accessible and modifiable by the client, except for `HttpOnly` cookies.
+- **Key-value storage**: Values are stored as strings; other data types must be serialized (e.g., using `JSON.stringify()`).
+- **Data security**: None of these mechanisms encrypt data by default, making it important to avoid storing sensitive information in plaintext.
+
+### Cookies
+
+Cookies are the only mechanism that supports automatic transmission to the server with each HTTP request. This makes them ideal for:
+
+- **Small pieces of server-relevant data**: Examples include session IDs, authentication tokens, and tracking preferences (e.g., GDPR consent).
+- **Persistent server interaction**: Cookies' automatic expiry (`Expires`, `Max-Age`) simplifies data lifecycle management.
+- **Security features**: Attributes like `HttpOnly` and `Secure` enhance protection against XSS and transmission over insecure connections.
+
+**Limitations**: Cookies have a low capacity (~4 KB total per domain) and require manual parsing in JavaScript.
+
+**Example**:
+```javascript
+// Set a cookie
+document.cookie = 'user_id=12345; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/';
+
+// Retrieve all cookies
+console.log(document.cookie); // 'user_id=12345'
+
+// Delete a cookie
+document.cookie = 'user_id=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+```
+
+Modern Alternative: The [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API) provides a promise-based approach for managing cookies but has limited browser support as of November 2024.
+
+### `localStorage`
+
+Designed for persistent client-side storage, `localStorage` is ideal for long-term data that doesn’t require server interaction, such as:
+
+- User preferences: Themes, layouts, or settings.
+- Non-sensitive app data: Caching or storing application states.
+
+**Characteristics:**
+
+- Data persists indefinitely until explicitly deleted.
+- Accessible across all tabs and windows under the same origin.
+
+**Example:**
+```javascript
+// Save data to localStorage
+localStorage.setItem('theme', 'dark');
+
+// Retrieve data
+console.log(localStorage.getItem('theme')); // 'dark'
+
+// Remove a specific item
+localStorage.removeItem('theme');
+
+// Clear all data
+localStorage.clear();
+```
+
+### `sessionStorage`
+
+`sessionStorage` is tailored for temporary data storage within a single browser session. Common use cases include:
+
+- Form data preservation: Retain form inputs during accidental page reloads.
+- Session-specific state: Track temporary preferences or actions that don’t persist across tabs or sessions.
+
+**Characteristics:**
+
+- Data is cleared when the tab or window is closed.
+- Accessible only within the originating tab or window.
+
+**Example:**
+```javascript
+// Save data to sessionStorage
+sessionStorage.setItem('draft', 'Hello, world!');
+
+// Retrieve data
+console.log(sessionStorage.getItem('draft')); // 'Hello, world!'
+
+// Remove a specific item
+sessionStorage.removeItem('draft');
+
+// Clear all data
+sessionStorage.clear();
+```
+
+### Additional Notes
+
+For advanced use cases, consider exploring [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), which offers a powerful database-like solution for structured storage but requires more complex implementation.
+
+### Summary
+
+All of the following mechanisms allow storing data on the client (i.e., the user's browser). `localStorage` and `sessionStorage` both implement the [Web Storage API interface](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).
+
+- **Cookies**: Best suited for server-client communication. They have a small storage capacity, can be persistent or session-based, and are domain-specific. Cookies are sent to the server with every HTTP request.
+- **`localStorage`**: Ideal for long-term storage, as data persists even after the browser is closed. Accessible across all tabs and windows of the same origin and has the highest storage capacity of the three.
+- **`sessionStorage`**: Best for temporary data within a single browsing session. Data is cleared when the tab or window is closed and is more capacity-efficient than cookies.
+
+| Property                           | Cookies                       | `localStorage`          | `sessionStorage`         |
+|------------------------------------|-------------------------------|--------------------------|--------------------------|
+| **Initiator**                      | Client or server (`Set-Cookie` header) | Client                | Client                |
+| **Lifespan**                       | Specified by `Expires`/`Max-Age` | Until deleted           | Until tab is closed      |
+| **Persistent across browser sessions** | If expiry is set             | Yes                      | No                       |
+| **Sent to server with HTTP requests** | Yes, via `Cookie` header     | No                       | No                       |
+| **Total capacity (per domain)**    | ~4 KB                        | ~5 MB                   | ~5 MB                   |
+| **Access**                         | Across windows and tabs       | Across windows and tabs  | Same tab                |
+| **Security**                       | `HttpOnly` cookies inaccessible to JavaScript | None              | None                   |
+
+
+### References
+
+- [MDN: Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API)
+- [What is the difference between localStorage, sessionStorage, session and cookies?](https://stackoverflow.com/questions/19867599/what-is-the-difference-between-localstorage-sessionstorage-session-and-cookies)
+- [MDN: Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API)
