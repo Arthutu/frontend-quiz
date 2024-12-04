@@ -819,3 +819,103 @@ This approach improves performance, reduces memory usage, and supports dynamic c
 
 - [Event Delegation | MDN](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation)
 - [React v17.0 Release Candidate: No New Features](https://legacy.reactjs.org/blog/2020/08/10/react-v17-rc.html#changes-to-event-delegation)
+
+## Question 11 - Explain how `this` works in JavaScript
+
+The `this` keyword in JavaScript refers to the execution context of a function. Its behavior depends on how and where the function is invoked.
+
+### Key Rules for `this`:
+
+1. **Global Context**:
+   - In the global scope, `this` refers to the global object (e.g., `window` in browsers or `global` in Node.js).
+   - In strict mode (`'use strict';`), `this` is `undefined` in the global scope.
+
+2. **Function Context**:
+   - For a regular function, `this` refers to the global object in non-strict mode and is `undefined` in strict mode.
+   - Example:
+     ```javascript
+     function regularFunction() {
+       console.log(this); // global object or undefined in strict mode
+     }
+     ```
+
+3. **Object Method**:
+   - When a method is called on an object, `this` refers to the object itself.
+   - Example:
+     ```javascript
+     const obj = {
+       value: 42,
+       method() {
+         return this.value;
+       },
+     };
+     console.log(obj.method()); // 42
+     ```
+
+4. **Arrow Functions**:
+   - Arrow functions **do not have their own `this`**. Instead, they inherit `this` from their enclosing lexical scope.
+   - Use case: Arrow functions are particularly useful for callbacks where you want `this` to retain its value from the outer context.
+   - Example:
+     ```javascript
+     const obj = {
+       value: 42,
+       arrow: () => console.log(this.value),
+       regular() {
+         console.log(this.value);
+       },
+     };
+     obj.arrow(); // undefined (inherited from global scope)
+     obj.regular(); // 42
+     ```
+
+5. **Class Context**:
+   - Within a class constructor, `this` refers to the instance of the class.
+   - Arrow functions in class properties bind `this` to the instance automatically.
+   - Example:
+     ```javascript
+     class MyClass {
+       constructor(value) {
+         this.value = value;
+       }
+       method() {
+         console.log(this.value);
+       }
+       arrow = () => {
+         console.log(this.value);
+       };
+     }
+     const instance = new MyClass(42);
+     instance.method(); // 42
+     instance.arrow(); // 42
+     ```
+6. **Event Handlers**:
+   - When using DOM event listeners, `this` typically refers to the element that fired the event. Use arrow functions or `bind` to control its value if needed.
+  
+### Important Considerations:
+
+- **Explicit Binding**:
+  - Methods like `.call()`, `.apply()`, and `.bind()` allow explicit control over `this`.
+  - Example:
+    ```javascript
+    function greet() {
+      console.log(this.name);
+    }
+    const user = { name: 'Alice' };
+    greet.call(user); // 'Alice'
+    ```
+
+- **Default Binding**:
+  - Without explicit binding or a containing object, `this` defaults to the global object or `undefined` in strict mode.
+
+- **Using `this` in Closures**:
+  - To avoid confusion, use `bind`, arrow functions, or store a reference to `this` (e.g., `const self = this;`) in nested functions.
+
+### Common Errors:
+
+1. Arrow functions as object methods (`this` refers to the outer scope, not the object).
+2. Losing `this` context when passing methods as callbacks.
+
+### References
+
+- [this - JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
+- [The Simple Rules to `this` in Javascript](https://medium.com/m/global-identity-2?redirectUrl=https%3A%2F%2Fcodeburst.io%2Fthe-simple-rules-to-this-in-javascript-35d97f31bde3)
