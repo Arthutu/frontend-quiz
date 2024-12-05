@@ -1207,3 +1207,107 @@ console.log(null === undefined); // false
 - [MDN Web Docs: null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null)
 - [MDN Web Docs: undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined)
 - [MDN Web Docs: ReferenceError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
+
+## Question 15 - What's the difference between `.call` and `.apply` in JavaScript?
+
+Both `.call` and `.apply` are methods of `Function.prototype` used to invoke a function with a specified `this` context. Their key difference lies in how they accept arguments:
+
+- `.call`: Accepts arguments individually, as a comma-separated list.
+- `.apply`: Accepts arguments as an array or an array-like object.
+
+**Remember:**
+- C for call and comma-separated arguments.
+- A for apply and array arguments.
+
+**Example:**
+
+```javascript
+function multiply(a, b) {
+  return a * b;
+}
+
+console.log(multiply.call(null, 3, 4)); // 12
+console.log(multiply.apply(null, [3, 4])); // 12
+```
+
+### Use Cases
+
+#### Context Management
+
+`.call` and `.apply` explicitly set the this value when invoking a function.
+
+```javascript
+const person = {
+  name: 'John',
+  introduce() {
+    console.log(`Hi, I'm ${this.name}.`);
+  },
+};
+
+const anotherPerson = { name: 'Alice' };
+
+// Using call:
+person.introduce.call(anotherPerson); // Hi, I'm Alice.
+
+// Using apply:
+person.introduce.apply(anotherPerson); // Hi, I'm Alice.
+```
+
+#### Function Borrowing
+
+Both `.call` and `.apply` allow borrowing methods from one object for use on another.
+
+```javascript
+const numbers = [1, 2, 3];
+const maxNumber = Math.max.apply(null, numbers);
+console.log(maxNumber); // 3
+```
+
+#### Alternative syntax to call methods on objects
+
+`.apply` can be used with methods like `Array.prototype.push` for merging arrays.
+
+```javascript
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+Array.prototype.push.apply(arr1, arr2);
+console.log(arr1); // [1, 2, 3, 4]
+```
+
+#### ES6+ Spread Operator
+
+With modern JavaScript, the spread operator `(...)` can replicate `.apply` functionality for argument arrays, offering improved readability.
+
+```javascript
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+const numbers = [1, 2, 3];
+console.log(sum(...numbers)); // 6
+```
+
+### Key Differences from `.bind`
+- `.call` and `.apply`: Invoke the function immediately with a specified this.
+- `.bind`: Returns a new function with a fixed this but does not invoke it immediately.
+
+### Summary
+
+| Trait             | `.call`                                    | `.apply`                                  |
+|-------------------|--------------------------------------------|-------------------------------------------|
+| **Argument Style**| Comma-separated: `.call(thisArg, arg1, arg2, ...)` | Array: `.apply(thisArg, [arg1, arg2, ...])` |
+| **Use Case**      | When you know arguments individually       | When you have arguments as an array       |
+
+### Example:
+```javascript
+function add(a, b) {
+  return a + b;
+}
+
+console.log(add.call(null, 1, 2)); // 3
+console.log(add.apply(null, [1, 2])); // 3
+```
+
+### References
+- [Function.prototype.call | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
+- [Function.prototype.apply | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply)
