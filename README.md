@@ -1311,3 +1311,38 @@ console.log(add.apply(null, [1, 2])); // 3
 ### References
 - [Function.prototype.call | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
 - [Function.prototype.apply | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply)
+
+## Question 16 - Why is it generally a good idea to position CSS `<link>`s between `<head></head>` and JS `<script>`s just before `</body>`?
+
+Optimally positioning CSS `<link>`s and JavaScript `<script>`s enhances performance and ensures faster page rendering:
+
+- **CSS `<link>`s:** Belong in the `<head>` to ensure stylesheets load early, enabling faster rendering and avoiding unstyled content.
+- **JavaScript `<script>`s:** Should typically be placed just before `</body>` to avoid blocking HTML parsing and rendering.
+
+### Placing `<link>`s in `<head>`
+
+CSS `<link>` tags are crucial for early page rendering. Here's why:
+
+1. **Simultaneous Parsing:** While the browser parses HTML to create the DOM (Document Object Model), it parses CSS to create the CSSOM (CSS Object Model). These combine to render the page visually.
+2. **First Meaningful Paint:** Early loading of stylesheets ensures the page has styling when it first appears, enhancing user experience and performance scores.
+3. **Avoiding FOUC:** Placing `<link>`s outside `<head>` can cause flashes of unstyled content (FOUC) or blank pages in some browsers, as they might delay rendering until styles are loaded.
+
+```html
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+```
+
+### Placing `<script>`s Just Before `</body>`
+
+JavaScript `<script>` tags block HTML parsing during download and execution, potentially delaying page rendering. To mitigate this:
+
+1. **Placement at Bottom:** Placing `<script>` tags just before `</body>` ensures the browser has already parsed HTML, allowing the page to render before executing JavaScript.
+2. **DOM Manipulation Safety:** Scripts placed at the bottom ensure that all DOM elements are available for manipulation, preventing runtime errors.
+
+```html
+<body>
+  <!-- Content here -->
+  <script src="script.js"></script>
+</body>
+```
