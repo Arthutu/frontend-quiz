@@ -1126,3 +1126,84 @@ The `<script>`, `<script async>`, and `<script defer>` tags load JavaScript in d
 
 - [`<script>`: The Script element | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#defer)
 - [async vs defer attributes](https://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html)
+
+## Question 14 - What's the difference between a JavaScript variable that is: `null`, `undefined` or undeclared?
+
+### Undeclared
+
+An **undeclared** variable is a variable that has not been declared using `var`, `let`, or `const`. Assigning a value to such a variable makes it globally accessible. However, in strict mode, trying to assign or access an undeclared variable throws a `ReferenceError`.
+
+#### Example
+
+```javascript
+function example() {
+  x = 5; // Throws ReferenceError in strict mode
+}
+example();
+console.log(x); // 5 (global variable outside strict mode)
+```
+
+### `undefined`
+
+A variable is `undefined` if it has been declared but not assigned a value. Functions with no explicit return value also return `undefined`.
+
+```javascript
+let myVar;
+console.log(myVar); // undefined
+
+function noReturn() {}
+console.log(noReturn()); // undefined
+```
+
+#### Checking for `undefined`
+
+```javascript
+let testVar;
+console.log(testVar === undefined); // true
+console.log(typeof testVar === 'undefined'); // true
+```
+
+### `null`
+
+`null` represents the intentional absence of value. It must be explicitly assigned to a variable.
+
+```javascript
+let emptyVar = null;
+console.log(emptyVar); // null
+console.log(typeof emptyVar); // "object"
+```
+
+#### Checking for `null`:
+
+```javascript
+let anotherVar = null;
+console.log(anotherVar === null); // true
+```
+
+### Comparing `null` and `undefined`
+
+Use `===` (strict squality) to avoid false positives when comparing.
+
+#### Loose Equality
+```javascript
+console.log(null == undefined); // true
+```
+
+#### Strict Equality
+```javascript
+console.log(null === undefined); // false
+```
+
+### Summary
+
+| Trait               | `null`                              | `undefined`                        | Undeclared                           |
+|---------------------|-------------------------------------|------------------------------------|--------------------------------------|
+| **Meaning**         | Explicitly set to indicate no value | Declared but not assigned a value | Not declared at all                  |
+| **Type**            | `object`                           | `undefined`                       | Throws `ReferenceError`              |
+| **Equality Check**  | `null == undefined` → `true`       | `undefined == null` → `true`      | Throws `ReferenceError`              |
+
+### References
+
+- [MDN Web Docs: null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null)
+- [MDN Web Docs: undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined)
+- [MDN Web Docs: ReferenceError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
