@@ -1038,3 +1038,91 @@ All of the following mechanisms allow storing data on the client (i.e., the user
 - [MDN: Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API)
 - [What is the difference between localStorage, sessionStorage, session and cookies?](https://stackoverflow.com/questions/19867599/what-is-the-difference-between-localstorage-sessionstorage-session-and-cookies)
 - [MDN: Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API)
+
+## Question 13 - Describe the difference between `<script>`, `<script async>` and `<script defer>`
+
+`<script>` tags embed or reference JavaScript files in an HTML document. The addition of `async` and `defer` attributes optimizes how browsers load and execute scripts, minimizing performance issues like render-blocking.
+
+### `<script>` (Default Behavior)
+
+A plain `<script>` tag halts HTML parsing to download and execute the script immediately. This can slow down page rendering if the script is large or if there are many scripts.
+
+- **Use Case**: For essential scripts needed to render the page (e.g., polyfills or inline scripts that initialize the UI).
+- **Downside**: Blocking behavior can degrade user experience.
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Regular Script Example</title>
+  </head>
+  <body>
+    <h1>Regular Script Example</h1>
+    <p>Rendering halts until the script below is executed.</p>
+
+    <script src="critical.js"></script>
+
+    <p>This content appears only after the script runs.</p>
+  </body>
+</html>
+```
+
+### `<script async>`
+
+Scripts with the `async` attribute load asynchronously and execute as soon as they are ready, potentially before HTML parsing completes. This non-blocking behavior improves perceived page speed.
+
+- **Use Case:** Non-essential scripts that don’t depend on other scripts, like analytics or ads.
+- **Caveat**: Unpredictable execution order if multiple async scripts are included.
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Async Script Example</title>
+  </head>
+  <body>
+    <h1>Async Script Example</h1>
+    <p>Content rendering continues while the script loads.</p>
+
+    <script async src="analytics.js"></script>
+
+    <p>This content may appear before or after the script executes.</p>
+  </body>
+</html>
+```
+
+### `<script defer>`
+
+Scripts with the `defer` attribute also load asynchronously but defer execution until after the HTML is fully parsed. Deferred scripts execute in the order they appear in the document.
+
+- **Use Case:** Scripts that depend on a fully-parsed DOM (e.g., manipulating elements).
+- **Advantage:** Predictable execution order, non-blocking HTML parsing.
+
+### Notes and Best Practices
+
+1. **Script Dependencies:** Use `defer` for interdependent scripts; avoid `async` in such cases.
+2. **Inline Scripts:** The `async` and `defer` attributes are ignored for inline `<script>` tags (those without a `src` attribute).
+3. **Performance:** Use tools like Lighthouse to identify render-blocking scripts.
+4. **Avoid `document.write`:** Scripts with `async` or `defer` should not use `document.write()`, as it is ignored and deprecated in modern browsers.
+
+### Summary
+
+The `<script>`, `<script async>`, and `<script defer>` tags load JavaScript in different ways, each suited for specific scenarios:
+
+- **`<script>`**: Blocks HTML parsing until the script is downloaded and executed. Use for critical scripts needed before rendering.
+- **`<script async>`**: Downloads scripts asynchronously and executes them immediately upon availability, potentially interrupting parsing. Best for independent scripts like analytics.
+- **`<script defer>`**: Downloads scripts asynchronously but executes them only after HTML parsing is complete, in order of appearance. Ideal for DOM-dependent scripts.
+
+### Key Differences
+
+| Feature                   | `<script>`           | `<script async>`       | `<script defer>`        |
+|---------------------------|----------------------|------------------------|-------------------------|
+| **HTML Parsing**          | Blocks              | Continues             | Continues              |
+| **Execution Timing**      | Immediate           | As soon as available  | After HTML is parsed    |
+| **Execution Order**       | Sequential          | Unpredictable         | Sequential             |
+| **DOM Dependency**        | No                  | No                    | Yes                    |
+
+### References
+
+- [`<script>`: The Script element | MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#defer)
+- [async vs defer attributes](https://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html)
