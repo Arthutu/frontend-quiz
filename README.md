@@ -1346,3 +1346,55 @@ JavaScript `<script>` tags block HTML parsing during download and execution, pot
   <script src="script.js"></script>
 </body>
 ```
+
+## Question 17 - Explain how a browser determines what elements match a CSS selector.
+
+When a browser processes CSS, it matches elements in the DOM against CSS selectors to determine which styles to apply. This process involves parsing the selectors and efficiently navigating the DOM to find matching elements. 
+
+### Key Selector and Right-to-Left Matching
+
+Browsers match CSS selectors starting from the rightmost part of the selector (known as the **key selector**) and move leftwards. This approach minimizes the number of elements the browser must evaluate and avoids unnecessary traversals.
+
+1. **Key Selector Identification:**
+   - In a selector like `p span`, the key selector is `span`.
+   - The browser first identifies all `<span>` elements in the DOM.
+
+2. **Parent Traversal:**
+   - For each `<span>`, the browser checks its parent and ancestor elements to find a `<p>`.
+   - If a `<p>` is found, the `<span>` matches the selector.
+
+3. **Early Termination:**
+   - The browser stops traversing the ancestors of a `<span>` once a matching `<p>` is found.
+
+### Selector Chain Length
+
+Shorter selector chains are faster because they reduce the number of elements the browser must check. For instance:
+- A long chain like `html body div.container p span` takes longer because the browser evaluates multiple ancestor elements for each `<span>`.
+- A short selector like `.container span` is quicker since it relies on class-based filtering and fewer ancestor checks.
+
+### Efficiency Considerations
+
+#### Avoid Overly Complex Selectors
+Selectors with many combinators (e.g., `descendant`, `child`, or `sibling`) or universal selectors (`*`) require more computation, as the browser must evaluate more potential matches.
+
+#### Use Classes and IDs
+Classes (`.class`) and IDs (`#id`) are faster to match because browsers index elements by these attributes. For example:
+- `#main span` is faster than `div span`.
+
+#### Avoid Tag-Based Selectors for Performance-Critical Code
+Selectors like `div span` can be slow in deeply nested structures, as the browser evaluates every `<div>` and `<span>` in the DOM.
+
+## Example
+
+Consider this selector:
+
+```css
+div.container ul li.item a
+```
+
+1. **Key Selector:** The browser starts with `a` and finds all `<a>` elements.
+2. **Parent Matching:** For each `<a>`, it checks:
+   - If it is a child of `li.item`,
+   - If that `li.item` is a descendant of `ul`,
+   - If that `ul` is a descendant of `div.container`.
+3. Stop on Match: If a `<a>` meets all conditions, it is styled, and further ancestor checks for that `<a>` stop.
